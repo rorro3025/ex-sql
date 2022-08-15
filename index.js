@@ -1,29 +1,20 @@
-const express = require('express');
-const cors = require('cors');
-const bodyParser = require('body-parser');
-
-const {connection} = require('./utils/database');
+const express = require("express");
+const cors = require("cors");
+const bodyParser = require("body-parser");
 
 const app = express();
-const PORT = process.env.PORT || 4000
-app.use(cors())
+const PORT = process.env.PORT || 4000;
+
+app.use(cors());
 app.use(bodyParser.json());
 
-app.get('/outlets',async (_req,res)=>{
-    let response = await connection.getAllOutlets();
-    res.json(response);
-})
+app.use("/customers", require("./routes/customers.route"));
+app.use("/outlets", require("./routes/outlets.route"));
+app.use("/employees", require("./routes/employees.route"));
+app.use("/products", require("./routes/products.route"));
 
-app.get('/customers/:id',async (req,res)=>{
-    let {id} = req.params;
-    let response = await connection.getOneCustomer(id);
-    res.json(response);
-})
+app.get("/", (_req, res) => {
+  res.send("This is the root of the API");
+});
 
-app.get('/employeeByOutlet/:number',async(req,res)=>{
-    let {number} = req.params;
-    let response = await connection.getAllEmployeesByOutlet(number);
-    res.json(response);
-    })
-
-app.listen(PORT,()=>console.log('Listening on port '+PORT))
+app.listen(PORT, () => console.log("Listening on port " + PORT));
